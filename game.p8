@@ -35,11 +35,11 @@ end
 
 function _update()
 	player_update()
-
+	
 end
 
 function _draw()
-	cls()
+	cls() 
 	map(0,0)
 	spr(player.sp,player.x,player.y,1,1,player.flp)
 end
@@ -61,8 +61,8 @@ function collide_map(obj,aim,flag)
 		x2=x   y2=y+h-1
 		
 	elseif aim=="right" then
-		x1=x+w y1=y
-		x2=x+w y2=y
+		x1=x+w 		y1=y
+		x2=x+w+1 y2=y+h-1
 		
 		
 	elseif aim=="up" then
@@ -70,8 +70,8 @@ function collide_map(obj,aim,flag)
 		x2=x+w-1 y2=y
 	
 	elseif aim=="down" then
-		x1=x   y1=y-1
-		x2=x+w y2=y
+		x1=x   y1=y+h
+		x2=x+w y2=y+h
 	end
 	
 	--pixels to tiles
@@ -94,6 +94,76 @@ end
 function player_update()
 	player.dy+=gravity
 	player.dx*=friction
+	
+	if btn(0) then 
+			player.dx-=player.acc
+			player.running=true
+			player.flp=true
+		end
+	if btn(1) then 
+		player.dx+=player.acc
+		player.running=true
+		player.flp=false
+	end
+	
+	--slide
+	if player.running
+		and not btn(0)
+		and not btn(1)
+		and not player.falling
+		and not player.jumping then 
+			player.running=false
+			player.sliding=true
+	end
+	
+	--jump
+	if btnp(5)
+	and player.landend then 
+		player.dy-=player.boose
+		player.landed=false
+	end
+
+	--check collision up and down
+	if player.dy>0 then
+		player.falling=true
+		player.landed=false
+		player.jumping=false
+		if collide_map(player,"down",0) then
+			player.landed=true
+			player.falling=false
+			player.dy=0
+			player.y-=(player.y+player.h)%8
+		end
+		elseif player.dy<0 then
+			player.jumping=true
+			if collide_map(player,"up",1) then
+				player.dy=0
+			end	
+	end	
+	
+	--check collison left and right
+		if player.dx<0 then
+			if collide_map(player, "left", 1) then
+				player.dx=0
+			end
+			elseif player.dx>0 then
+				if collide_map(player, "right", 1) then
+					player.dx=0
+			end
+		end	
+		
+		--stop sliding
+		if player.sliding then 
+			if abs(player.dx)<.2
+			or player.running then
+				player.dx=0
+				player.sliding=false
+			end
+		end	
+
+	player.x+=player.dx
+	player.y+=player.dy
+	
 end
 __gfx__
 0000000000aaaaa000aaaaa0000aaaaa000aaaaa000aaaaa000aaaaa000aaaaa100aaaaa00000000000000000000000000000000000000000000000000000000
