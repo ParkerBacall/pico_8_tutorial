@@ -39,54 +39,54 @@ function _update()
 end
 
 function _draw()
-	cls() 
+	cls()
 	map(0,0)
 	spr(player.sp,player.x,player.y,1,1,player.flp)
 end
 -->8
---collisons
+--collisions
 
 function collide_map(obj,aim,flag)
-	--obj=table needs x,y,w,h
-	--aim = left,right,up,down
-
+	--obj = table needs x,y,w,h
+	--aim = left right up down
+	
 	local x=obj.x local y=obj.y
 	local w=obj.w local h=obj.h
 	
-	local x1=0 local y=0
+	local x1=0 local y1=0
 	local x2=0 local y2=0
 	
-	if aim=="left" then 
+	if aim=="left" then
 		x1=x-1 y1=y
 		x2=x   y2=y+h-1
-		
+	
 	elseif aim=="right" then
-		x1=x+w 		y1=y
-		x2=x+w+1 y2=y+h-1
-		
-		
-	elseif aim=="up" then
+		x1=x+w   y1=y
+		x2=x+w+1 y2=y+h-1 
+	
+	elseif aim=="up" then 
 		x1=x+1   y1=y-1
-		x2=x+w-1 y2=y
+		x2=x+w-1	y2=y
 	
 	elseif aim=="down" then
 		x1=x   y1=y+h
 		x2=x+w y2=y+h
 	end
 	
-	--pixels to tiles
-	x1/=8  y1/=8
-	x2/=8  y2/=8
+	--pixel to tile
+	x1/=8 y1/=8
+	x2/=8 y2/=8
 	
-	if fget(mget(x1,y1),flag)
-	or fget(mget(x1,y2),flag)
-	or fget(mget(x2,y1),flag)
-	or fget(mget(x2,y2),flag) then 
+	
+	if fget(mget(x1,y1), flag)
+	or fget(mget(x1,y2), flag)
+	or fget(mget(x2,y1), flag)
+	or fget(mget(x2,y2), flag) then
 		return true
-	else 
+	else
 		return false
 	end
-	
+
 end
 -->8
 --player functions
@@ -96,6 +96,7 @@ function player_update()
 	player.dx*=friction
 	
 	if btn(0) then 
+		printh('hit',"@clip")
 			player.dx-=player.acc
 			player.running=true
 			player.flp=true
@@ -128,6 +129,7 @@ function player_update()
 		player.falling=true
 		player.landed=false
 		player.jumping=false
+		printh(collide_map(player,"down",0),"@clip")
 		if collide_map(player,"down",0) then
 			player.landed=true
 			player.falling=false
@@ -148,7 +150,7 @@ function player_update()
 			end
 			elseif player.dx>0 then
 				if collide_map(player, "right", 1) then
-					player.dx=0
+					player.dx=0 
 			end
 		end	
 		
@@ -231,7 +233,7 @@ bb3bbbbbbb3bbbbb0000000000000000000000000000000000000000000000000000000000000000
 003bb300003bb3000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 003bb300003bb3000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __gff__
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003030303030300000000000000000000030303030000000000000000000000000101000000000000000000000000000001010000000000000000000000000000
+0001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003030303030300000000000000000000030303030000000000000000000000000101000000000000000000000000000001010000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 7171000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
