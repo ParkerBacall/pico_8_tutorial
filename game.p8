@@ -14,7 +14,7 @@ function _init()
 		dx=0,
 		dy=0,
 		max_dx=2,
-		mac_dy=3,
+		max_dy=3,
 		acc=0.5,
 		boost=4,
 		anim=0,
@@ -35,7 +35,7 @@ end
 
 function _update()
 	player_update()
-	
+	player_animate()
 end
 
 function _draw()
@@ -129,6 +129,9 @@ function player_update()
 		player.falling=true
 		player.landed=false
 		player.jumping=false
+		
+		player.dy=limit_speed(player.dy, player.max_dy)
+		
 		if collide_map(player,"down",0) then
 			player.landed=true
 			player.falling=false
@@ -144,10 +147,14 @@ function player_update()
 	
 	--check collison left and right
 		if player.dx<0 then
+		
+			player.dx=limit_speed(player.dx,player.max_dx)
+		
 			if collide_map(player, "left", 1) then
 				player.dx=0
 			end
 			elseif player.dx>0 then
+				player.dx=limit_speed(player.dx,player.max_dx)
 				if collide_map(player, "right", 1) then
 					player.dx=0 
 			end
@@ -165,6 +172,37 @@ function player_update()
 	player.x+=player.dx
 	player.y+=player.dy
 	
+end
+
+function player_animate()
+	if player.jumping then
+		player.sp=7
+	elseif player.falling then
+		player.sp=8
+	elseif player.sliding then 
+		player.sp=9
+	elseif player.running then
+		if time()-player.anim>.1 then
+			player.anim=time()
+			player.sp+=1
+			if player.sp>6 then
+				player.sp=3
+			end
+		end
+	else --idle
+		if time()-player.anim>.3 then
+			player.anim=time()
+			player.sp+=1
+			if player.sp>2 then
+				player.sp=1
+			end
+		end	
+	end
+	
+end
+
+function limit_speed(num,maximum)
+	return mid(-maximum,num,maximum)
 end
 __gfx__
 0000000000aaaaa000aaaaa0000aaaaa000aaaaa000aaaaa000aaaaa000aaaaa100aaaaa00000000000000000000000000000000000000000000000000000000
