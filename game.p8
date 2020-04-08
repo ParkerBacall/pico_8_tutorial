@@ -119,8 +119,8 @@ function player_update()
 	
 	--jump
 	if btnp(5)
-	and player.landend then 
-		player.dy-=player.boose
+	and player.landed then 
+		player.dy-=player.boost
 		player.landed=false
 	end
 
@@ -129,7 +129,6 @@ function player_update()
 		player.falling=true
 		player.landed=false
 		player.jumping=false
-		printh(collide_map(player,"down",0),"@clip")
 		if collide_map(player,"down",0) then
 			player.landed=true
 			player.falling=false
