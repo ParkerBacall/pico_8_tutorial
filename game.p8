@@ -4,6 +4,7 @@ __lua__
 --variables
 
 function _init()
+--starts first music track
 music(0)
 
 	player={
